@@ -1,4 +1,4 @@
-# 🧠 AI Kanban Board App
+# 🧠 Kanban Board App
 
 A modern and minimal **Kanban Board** application built with **React**, **Express**, and **MongoDB**. It features:
 
@@ -55,7 +55,6 @@ Create a `.env` file in the **frontend root (`client/.env`)**:
 VITE_API_BASE_URL=http://localhost:5000/api
 
 ✅ Features
-🧠 AI-ready task tracking base
 
 🧩 Drag-and-drop tasks between columns
 
