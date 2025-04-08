@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-100 font-sans;
+}
+
+[role="button"] {
+  touch-action: none; /* Improves touch device behavior */
+}
+
+.dnd-handle {
+  cursor: grab;
+}
+
+.dnd-handle:active {
+  cursor: grabbing;
+}
+.dnd-handle:active,
+.dnd-handle:focus {
+  outline: none;
+}
