@@ -1,7 +1,9 @@
 import { createContext, useContext, useState } from "react";
 
-// Create AuthContext
 const AuthContext = createContext();
+
+// Access API URL from .env
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -15,9 +17,8 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  // Register a new user
   const register = async (username, email, password) => {
-    const response = await fetch("http://localhost:5000/auth/register", {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
@@ -26,15 +27,13 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Registration failed");
 
-    // Save token and user to localStorage
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("user", JSON.stringify(data.user));
     setUser(data.user);
   };
 
-  // Login with email/password
   const login = async (email, password) => {
-    const response = await fetch("http://localhost:5000/auth/login", {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -48,15 +47,14 @@ export const AuthProvider = ({ children }) => {
     setUser(data.user);
   };
 
-  //  Logout the user
   const logout = async () => {
     try {
-      await fetch("http://localhost:5000/auth/logout", {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        credentials: "include", // to send cookies
+        credentials: "include",
       });
     } catch (err) {
       console.error("Logout error:", err);
@@ -67,12 +65,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  //  Get current user from token
   const getCurrentUser = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return null;
 
-    const response = await fetch("http://localhost:5000/auth/me", {
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -87,11 +84,9 @@ export const AuthProvider = ({ children }) => {
     return data.user;
   };
 
-  // Provide auth context values
   const value = { user, register, login, logout, getCurrentUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-//  Custom hook to use auth
 export const useAuth = () => useContext(AuthContext);
